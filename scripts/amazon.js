@@ -1,5 +1,7 @@
+import { addToCart, cartQuantity} from "../data/cart.js";
+import { myProducts } from "../data/products.js";
+
 let productHTML = '';
-// let cartQuantity = 0;
 
 for (let id in myProducts) {
   if (myProducts.hasOwnProperty(id)){
@@ -72,27 +74,10 @@ document.querySelectorAll('.js-add-to-cart').forEach(
       const id = buttonElem.dataset.productId;
       const quantity = 1;
 
-      if (myCart[id]){
-        myCart[id].quantity += quantity;
-      } else {
-        myCart[id] = {
-          'name': myProducts[id].name, 
-          'image': myProducts[id].image,
-          'price': myProducts[id].priceCents,
-          'quantity': quantity
-        };
-      }
-      
-      let cartQuantity = 0;
-
-      Object.values(myCart).forEach(
-        (item) => {
-          cartQuantity += item.quantity;
-        }
-      );
+      addToCart(id, quantity);
 
       document.querySelector('.js-cart-quantity')
-        .innerHTML = cartQuantity;
+        .innerHTML = cartQuantity();
 
     }
   )}
