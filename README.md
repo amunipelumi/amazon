@@ -1,2 +1,2 @@
 # Amazon
-Amazon shopping project website
+Amazon shopping website project
