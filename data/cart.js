@@ -1,18 +1,18 @@
-import { myProducts } from "./products.js";
+export let myCart = JSON.parse(localStorage.getItem('myCart')) || {};
 
-export const myCart = {};
+export function saveCart(){
+  localStorage.setItem('myCart', JSON.stringify(myCart));
+};
 
 export function addToCart(id, itemQuantity){
   if (myCart[id]){
     myCart[id].quantity += itemQuantity;
   } else {
     myCart[id] = {
-      'name': myProducts[id].name, 
-      'image': myProducts[id].image,
-      'price': myProducts[id].priceCents,
       'quantity': itemQuantity
     };
   }
+  saveCart();
 };
 
 export function cartQuantity(){
@@ -25,3 +25,11 @@ export function cartQuantity(){
   );
   return cartQuantity;
 };
+
+export function removeFromCart(id){
+  delete myCart[id];
+  saveCart();
+  return myCart;
+};
+
+let cart = [];

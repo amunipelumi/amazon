@@ -1,5 +1,6 @@
-import { addToCart, cartQuantity} from "../data/cart.js";
+import { myCart, addToCart, cartQuantity, saveCart } from "../data/cart.js";
 import { myProducts } from "../data/products.js";
+import { priceFormat } from "./utils/price.js";
 
 let productHTML = '';
 
@@ -27,7 +28,7 @@ for (let id in myProducts) {
       </div>
 
       <div class="product-price">
-        $${(myProducts[id].priceCents/100).toFixed(2)}
+        $${priceFormat(myProducts[id].priceCents)}
       </div>
 
       <div class="product-quantity-container">
@@ -68,6 +69,9 @@ for (let id in myProducts) {
 document.querySelector('.js-products-grid')
   .innerHTML = productHTML;
 
+document.querySelector('.js-cart-quantity-start')
+  .innerHTML = cartQuantity();
+
 document.querySelectorAll('.js-add-to-cart').forEach(
   (buttonElem) => {buttonElem.addEventListener(
     'click', () => {
@@ -75,6 +79,8 @@ document.querySelectorAll('.js-add-to-cart').forEach(
       const quantity = 1;
 
       addToCart(id, quantity);
+      saveCart();
+      // console.log(myCart);
 
       document.querySelector('.js-cart-quantity')
         .innerHTML = cartQuantity();
