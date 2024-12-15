@@ -1,3 +1,5 @@
+import { deliveryOptions } from "./delivery.js";
+
 export let myCart = JSON.parse(localStorage.getItem('myCart')) || {};
 
 export function saveCart(){
@@ -9,11 +11,29 @@ export function addToCart(id, itemQuantity){
     myCart[id].quantity += itemQuantity;
   } else {
     myCart[id] = {
-      'quantity': itemQuantity
+      'quantity': itemQuantity,
+      'itemDelivery': deliveryOptions['1']
     };
   }
   saveCart();
 };
+
+export function updateCart(
+  id, 
+  newDeliveryDays, 
+  option = deliveryOptions
+  ){
+    for (let i in option){
+      if (option.hasOwnProperty(i)){
+        const currDelivery = option[i].deliveryDays;
+        if (currDelivery === Number(newDeliveryDays)){
+          myCart[id].itemDelivery = deliveryOptions[i];
+          saveCart();
+          return;
+        }
+      }
+    }
+  };
 
 export function cartQuantity(){
   let cartQuantity = 0;
@@ -31,5 +51,3 @@ export function removeFromCart(id){
   saveCart();
   return myCart;
 };
-
-let cart = [];
