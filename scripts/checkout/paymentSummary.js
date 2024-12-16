@@ -3,21 +3,81 @@ import { myProducts } from "../../data/products.js";
 import { priceFormat } from "../utils/price.js";
 
 
+
 export function paymentSummary(){
   let totalItemCost = 0;
   let totalShippingCost = 0;
+  let totalItemQuantity = 0;
 
   for (let i in myCart){
     if (myCart.hasOwnProperty(i)){
       const itemQuantity = myCart[i].quantity;
       const productPrice = myProducts[i].priceCents;
-      const itemCost = itemQuantity*productPrice
+      const itemCost = itemQuantity * productPrice
       const itemShipping = myCart[i].itemDelivery.priceInCents
 
       totalItemCost += itemCost;
       totalShippingCost += itemShipping;
+      totalItemQuantity += itemQuantity;
     }
   }
-  console.log('All item cost: ', priceFormat(totalItemCost));
-  console.log('All shipping cost: ', priceFormat(totalShippingCost));
+  
+  const totalBeforeTax = totalItemCost + totalShippingCost;
+  const estimatedTax = totalBeforeTax * 0.1;
+  const totalOrderCost = totalBeforeTax + estimatedTax;
+
+  // console.log(`Items(${totalItemQuantity}): $${priceFormat(totalItemCost)}`);
+  // console.log(`Shipping & handling: $${priceFormat(totalShippingCost)}`);
+  // console.log(`Total before tax: $${priceFormat(totalBeforeTax)}`);
+  // console.log(`Estimated tax (10%): $${priceFormat(estimatedTax)}`);
+  // console.log(`Order total: $${priceFormat(totalOrderCost)}`);
+
+  const orderCostHTML = `
+  <div class="order-summary js-order-summary"></div>
+
+  <div class="payment-summary">
+    <div class="payment-summary-title">
+      Order Summary
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Items (${totalItemQuantity}):</div>
+      <div class="payment-summary-money">$${priceFormat(totalItemCost)}</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Shipping &amp; handling:</div>
+      <div class="payment-summary-money">$${priceFormat(totalShippingCost)}</div>
+    </div>
+
+    <div class="payment-summary-row subtotal-row">
+      <div>Total before tax:</div>
+      <div class="payment-summary-money">$${priceFormat(totalBeforeTax)}</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Estimated tax (10%):</div>
+      <div class="payment-summary-money">$${priceFormat(estimatedTax)}</div>
+    </div>
+
+    <div class="payment-summary-row total-row">
+      <div>Order total:</div>
+      <div class="payment-summary-money">$${priceFormat(totalOrderCost)}</div>
+    </div>
+
+    <button class="place-order-button button-primary">
+      Place your order
+    </button>
+  </div>
+  `
+
+  document.querySelector('.js-item-quantity').innerHTML = `
+  Checkout (<a class="return-to-home-link js-item-quantity"
+               href="index.html">${totalItemQuantity} items
+            </a>)
+  `;
+
+  document.querySelector('.js-checkout-grid')
+    .innerHTML = orderCostHTML;
+
 };

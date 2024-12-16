@@ -1,7 +1,7 @@
-import { orderSummary } from "./checkout/orderSummary.js";
 import { paymentSummary } from "./checkout/paymentSummary.js";
+import { orderSummary } from "./checkout/orderSummary.js";
 
 
 
-orderSummary();
 paymentSummary();
+orderSummary();

@@ -3,17 +3,18 @@ import { myCart, removeFromCart, updateCart } from "../../data/cart.js";
 import { deliveryOptions } from "../../data/delivery.js";
 import { myProducts } from "../../data/products.js";
 import { priceFormat } from "../utils/price.js";
+import { paymentSummary } from './paymentSummary.js';
 
 
+
+function formatDate(days){
+  const date = dayjs();
+  const days_ = date.add(days, 'days');
+  const format = days_.format('dddd, MMMM D');
+  return format;
+};
 
 export function orderSummary(){
-
-  function formatDate(days){
-    const date = dayjs();
-    const days_ = date.add(days, 'days');
-    const format = days_.format('dddd, MMMM D');
-    return format;
-  };
 
   function deliveryOptionsHTML(productId, itemDelivery){
     let deliveryHTML = `
@@ -127,6 +128,8 @@ export function orderSummary(){
         removeFromCart(itemId);
         document.querySelector(`.js-cart-item-${itemId}`)
           .remove();
+        paymentSummary();
+        orderSummary();
       });
     });
 
@@ -141,6 +144,7 @@ export function orderSummary(){
         //   `.js-delivery-date-${itemId}`
         // ).textContent = `Delivery date: ${format}`;
         // console.log(myCart);
+        paymentSummary();
         orderSummary();
       });
     });
