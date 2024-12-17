@@ -1,5 +1,5 @@
-import { myCart } from "../../data/cart.js";
-import { myProducts } from "../../data/products.js";
+import { myCart } from "../data/cart.js";
+import { myProducts } from "../data/products.js";
 import { priceFormat } from "../utils/price.js";
 
 
@@ -33,9 +33,6 @@ export function paymentSummary(){
   // console.log(`Order total: $${priceFormat(totalOrderCost)}`);
 
   const orderCostHTML = `
-  <div class="order-summary js-order-summary"></div>
-
-  <div class="payment-summary">
     <div class="payment-summary-title">
       Order Summary
     </div>
@@ -68,7 +65,6 @@ export function paymentSummary(){
     <button class="place-order-button button-primary">
       Place your order
     </button>
-  </div>
   `
 
   document.querySelector('.js-item-quantity').innerHTML = `
@@ -77,7 +73,7 @@ export function paymentSummary(){
             </a>)
   `;
 
-  document.querySelector('.js-checkout-grid')
+  document.querySelector('.js-payment-summary')
     .innerHTML = orderCostHTML;
 
 };

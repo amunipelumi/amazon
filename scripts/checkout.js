@@ -3,5 +3,5 @@ import { orderSummary } from "./checkout/orderSummary.js";
 
 
 
-paymentSummary();
 orderSummary();
+paymentSummary();

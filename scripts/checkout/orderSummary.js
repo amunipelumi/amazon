@@ -1,7 +1,7 @@
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
-import { myCart, removeFromCart, updateCart } from "../../data/cart.js";
-import { deliveryOptions } from "../../data/delivery.js";
-import { myProducts } from "../../data/products.js";
+import { myCart, removeFromCart, updateCart } from "../data/cart.js";
+import { deliveryOptions } from "../data/delivery.js";
+import { myProducts } from "../data/products.js";
 import { priceFormat } from "../utils/price.js";
 import { paymentSummary } from './paymentSummary.js';
 
@@ -73,8 +73,12 @@ export function orderSummary(){
         );
 
         cartItemHTML += `
-          <div 
-            class="cart-item-container js-cart-item-${i}">
+          <div class="
+                cart-item-container 
+                js-cart-item-container 
+                js-cart-item-${i}
+                "
+            >
             <div class="delivery-date js-delivery-date-${i}">
               Delivery date: ${formatDate(days)}
             </div>
@@ -93,7 +97,11 @@ export function orderSummary(){
                   $${priceFormat(cartItem.priceCents)}
                 </div>
 
-                <div class="product-quantity">
+                <div class="
+                      product-quantity 
+                      js-product-quantity
+                      js-product-quantity-${i}"
+                    >
                   <span>
                     Quantity: <span class="quantity-label">${quantity}</span>
                   </span>
@@ -101,7 +109,10 @@ export function orderSummary(){
                     Update
                   </span>
                   <span 
-                    class="delete-quantity-link link-primary js-delete-quantity"
+                    class="delete-quantity-link 
+                          link-primary 
+                          js-delete-quantity
+                          js-delete-link-${i}"
                     data-cart-item-id="${i}">
                     Delete
                   </span>
@@ -109,7 +120,6 @@ export function orderSummary(){
               </div>
     
               <div class="delivery-options">${deliveryOptions}</div>
-
             </div>
           </div>
         `;
@@ -128,8 +138,8 @@ export function orderSummary(){
         removeFromCart(itemId);
         document.querySelector(`.js-cart-item-${itemId}`)
           .remove();
-        paymentSummary();
         orderSummary();
+        paymentSummary();
       });
     });
 
@@ -144,8 +154,8 @@ export function orderSummary(){
         //   `.js-delivery-date-${itemId}`
         // ).textContent = `Delivery date: ${format}`;
         // console.log(myCart);
-        paymentSummary();
         orderSummary();
+        paymentSummary();
       });
     });
 };

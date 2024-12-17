@@ -1,6 +1,11 @@
 import { deliveryOptions } from "./delivery.js";
 
-export let myCart = JSON.parse(localStorage.getItem('myCart')) || {};
+export let myCart;
+loadLocalStorage();
+
+export function loadLocalStorage(){
+  myCart = JSON.parse(localStorage.getItem('myCart')) || {};
+};
 
 export function saveCart(){
   localStorage.setItem('myCart', JSON.stringify(myCart));
