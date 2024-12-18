@@ -1,34 +1,34 @@
-import { myCart, addToCart, cartQuantity, saveCart } from "../data/cart.js";
-import { myProducts } from "../data/products.js";
-import { priceFormat } from "./utils/price.js";
+import { addToCart, cartQuantity } from "./data/cart.js";
+import { products } from "./data/products.js";
+
+
 
 let productHTML = '';
 
-for (let id in myProducts) {
-  if (myProducts.hasOwnProperty(id)){
-    productHTML += `
+products.forEach((product) => {
+  productHTML += `
     <div class="product-container">
       <div class="product-image-container">
         <img class="product-image"
-          src="${myProducts[id].image}"
+          src="${product.image}"
         >
       </div>
 
       <div class="product-name limit-text-to-2-lines">
-        ${myProducts[id].name}
+        ${product.name}
       </div>
 
       <div class="product-rating-container">
         <img class="product-rating-stars"
-          src="images/ratings/rating-${myProducts[id].rating.stars*10}.png"
+          src="${product.getStarsUrl()}"
         >
         <div class="product-rating-count link-primary">
-          ${myProducts[id].rating.count}
+          ${product.rating.count}
         </div>
       </div>
 
       <div class="product-price">
-        $${priceFormat(myProducts[id].priceCents)}
+        ${product.getPrice()}
       </div>
 
       <div class="product-quantity-container">
@@ -46,6 +46,8 @@ for (let id in myProducts) {
         </select>
       </div>
 
+      ${product.getExtraInfo()}
+
       <div class="product-spacer"></div>
 
       <div class="added-to-cart">
@@ -58,13 +60,12 @@ for (let id in myProducts) {
         add-to-cart-button 
         button-primary 
         js-add-to-cart"
-        data-product-id="${id}">
+        data-product-id="${product.id}">
         Add to Cart
       </button>
     </div>
-    `;
-  }
-}
+  `
+});
 
 document.querySelector('.js-products-grid')
   .innerHTML = productHTML;
@@ -79,12 +80,10 @@ document.querySelectorAll('.js-add-to-cart').forEach(
       const quantity = 1;
 
       addToCart(id, quantity);
-      saveCart();
       // console.log(myCart);
 
       document.querySelector('.js-cart-quantity')
         .innerHTML = cartQuantity();
-
     }
   )}
 );

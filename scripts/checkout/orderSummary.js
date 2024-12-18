@@ -1,7 +1,7 @@
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import { myCart, removeFromCart, updateCart } from "../data/cart.js";
-import { deliveryOptions } from "../data/delivery.js";
-import { myProducts } from "../data/products.js";
+import { deliveryOptions as option} from "../data/delivery.js";
+import { getCartProduct } from "../data/products.js"
 import { priceFormat } from "../utils/price.js";
 import { paymentSummary } from './paymentSummary.js';
 
@@ -16,22 +16,22 @@ function formatDate(days){
 
 export function orderSummary(){
 
-  function deliveryOptionsHTML(productId, itemDelivery){
+  function deliveryOptionsHTML(productId, deliveryType){
     let deliveryHTML = `
     <div class="delivery-options-title">
       Choose a delivery option:
     </div>`;
 
-    for (let i in deliveryOptions){
-      if (deliveryOptions.hasOwnProperty(i)){
+    for (let i in option){
+      if (option.hasOwnProperty(i)){
 
-        const current = deliveryOptions[i];
+        const curr = option[i];
 
-        const days = current.deliveryDays;
-        const priceValue = current.priceInCents;
+        const days = curr.deliveryDays;
+        const priceValue = curr.priceInCents;
         const price = priceValue === 0 ? 'Free': `$${priceFormat(priceValue)}`;
 
-        const isChecked = itemDelivery['id'] === current['id'];
+        const isChecked = deliveryType['id'] === curr['id'];
 
         deliveryHTML += `
           <div class="delivery-option">
@@ -61,72 +61,72 @@ export function orderSummary(){
   function cartItems(cart){
     let cartItemHTML = '';
 
-    for (let i in cart){
-      if (cart.hasOwnProperty(i)){
+    cart.forEach((cartItem) => {
+      const quantity = cartItem.quantity;
+      const deliveryType = cartItem.deliveryType;
+      const days = deliveryType.deliveryDays;
+      const deliveryOptions = deliveryOptionsHTML(
+        cartItem.id, deliveryType
+      );
+      const cartProduct = getCartProduct(cartItem.id);
 
-        const cartItem = myProducts[i];
-        const quantity = cart[i].quantity;
-        const itemDelivery = cart[i].itemDelivery;
-        const days = itemDelivery.deliveryDays;
-        const deliveryOptions = deliveryOptionsHTML(
-          i, itemDelivery
-        );
-
-        cartItemHTML += `
-          <div class="
+      cartItemHTML += `
+        <div class="
                 cart-item-container 
                 js-cart-item-container 
-                js-cart-item-${i}
+                js-cart-item-${cartItem.id}
                 "
-            >
-            <div class="delivery-date js-delivery-date-${i}">
-              Delivery date: ${formatDate(days)}
-            </div>
-    
-            <div class="cart-item-details-grid">
-              <img class="product-image"
-                src="${cartItem.image}"
-              >
-    
-              <div class="cart-item-details">
-                <div class="product-name">
-                  ${cartItem.name}
-                </div>
+          >
 
-                <div class="product-price">
-                  $${priceFormat(cartItem.priceCents)}
-                </div>
-
-                <div class="
-                      product-quantity 
-                      js-product-quantity
-                      js-product-quantity-${i}"
-                    >
-                  <span>
-                    Quantity: <span class="quantity-label">${quantity}</span>
-                  </span>
-                  <span class="update-quantity-link link-primary">
-                    Update
-                  </span>
-                  <span 
-                    class="delete-quantity-link 
-                          link-primary 
-                          js-delete-quantity
-                          js-delete-link-${i}"
-                    data-cart-item-id="${i}">
-                    Delete
-                  </span>
-                </div>
-              </div>
-    
-              <div class="delivery-options">${deliveryOptions}</div>
-            </div>
+          <div class="delivery-date js-delivery-date-${cartItem.id}">
+            Delivery date: ${formatDate(days)}
           </div>
-        `;
-      }
-    }
+  
+          <div class="cart-item-details-grid">
+            <img class="product-image"
+              src=${cartProduct.image}
+            >
+  
+            <div class="cart-item-details">
+              <div class="product-name">
+                ${cartProduct.name}
+              </div>
+
+              <div class="product-price">
+                $${priceFormat(cartProduct.priceCents)}
+              </div>
+
+              <div class="
+                    product-quantity 
+                    js-product-quantity
+                    js-product-quantity-${cartItem.id}"
+                  >
+                <span>
+                  Quantity: <span class="quantity-label">${quantity}</span>
+                </span>
+                <span class="update-quantity-link link-primary">
+                  Update
+                </span>
+                <span 
+                  class="delete-quantity-link 
+                        link-primary 
+                        js-delete-quantity
+                        js-delete-link-${cartItem.id}"
+                  data-cart-item-id="${cartItem.id}">
+                  Delete
+                </span>
+              </div>
+            </div>
+  
+            <div class="delivery-options">${deliveryOptions}</div>
+          </div>
+        </div>
+      `;
+    });
+    
     document.querySelector('.js-order-summary')
       .innerHTML = cartItemHTML;
+    
   };
 
   cartItems(myCart);

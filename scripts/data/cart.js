@@ -1,50 +1,59 @@
-import { deliveryOptions } from "./delivery.js";
+import { deliveryOptions as option } from "./delivery.js";
 
 export let myCart;
 loadLocalStorage();
 
 export function loadLocalStorage(){
-  myCart = JSON.parse(localStorage.getItem('myCart')) || {};
+  myCart = JSON.parse(localStorage.getItem('myCart')) || [];
 };
 
 export function saveCart(){
   localStorage.setItem('myCart', JSON.stringify(myCart));
 };
 
-export function addToCart(id, itemQuantity){
-  if (myCart[id]){
-    myCart[id].quantity += itemQuantity;
+export function addToCart(id, newQuantity){
+  let itemExist;
+
+  myCart.forEach((product) => {
+    if (product.id === id){
+      itemExist = product;
+    }
+  });
+  
+  if (itemExist){
+    itemExist.quantity += newQuantity;
   } else {
-    myCart[id] = {
-      'quantity': itemQuantity,
-      'itemDelivery': deliveryOptions['1']
-    };
+    myCart.unshift({
+      'id': id,
+      'quantity': newQuantity,
+      'deliveryType': option['1']
+    });
   }
+
   saveCart();
 };
 
-export function updateCart(
-  id, 
-  newDeliveryDays, 
-  option = deliveryOptions
-  ){
-    for (let i in option){
-      if (option.hasOwnProperty(i)){
-        const currDelivery = option[i].deliveryDays;
-        if (currDelivery === Number(newDeliveryDays)){
-          myCart[id].itemDelivery = deliveryOptions[i];
-          saveCart();
-          return;
-        }
+export function updateCart(id, newDays, op_ = option){
+  for (let i in op_){
+    if (op_.hasOwnProperty(i)){
+      const curr = op_[i].deliveryDays;
+      if (curr === Number(newDays)){
+        myCart.forEach((item) => {
+          if (item.id === id){
+            item.deliveryType = op_[i];
+            saveCart();
+            return;
+          }
+        })
       }
     }
-  };
+  }
+};
 
 export function cartQuantity(){
   let cartQuantity = 0;
 
-  Object.values(myCart).forEach(
-    (item) => {
+  myCart.forEach((item) => {
       cartQuantity += item.quantity;
     }
   );
@@ -52,7 +61,12 @@ export function cartQuantity(){
 };
 
 export function removeFromCart(id){
-  delete myCart[id];
+  let newCart = [];
+  myCart.forEach((item) => {
+    if (item.id !== id){
+      newCart.unshift(item);
+    }
+  });
+  myCart = newCart;
   saveCart();
-  return myCart;
 };

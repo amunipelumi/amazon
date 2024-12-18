@@ -1,5 +1,5 @@
 import { myCart } from "../data/cart.js";
-import { myProducts } from "../data/products.js";
+import { getCartProduct } from "../data/products.js"
 import { priceFormat } from "../utils/price.js";
 
 
@@ -9,18 +9,17 @@ export function paymentSummary(){
   let totalShippingCost = 0;
   let totalItemQuantity = 0;
 
-  for (let i in myCart){
-    if (myCart.hasOwnProperty(i)){
-      const itemQuantity = myCart[i].quantity;
-      const productPrice = myProducts[i].priceCents;
-      const itemCost = itemQuantity * productPrice
-      const itemShipping = myCart[i].itemDelivery.priceInCents
+  myCart.forEach((cartItem) => {
+    const cartProduct = getCartProduct(cartItem.id);
+    const itemQuantity = cartItem.quantity;
+    const productPrice = cartProduct.priceCents;
+    const itemCost = itemQuantity * productPrice
+    const itemShipping = cartItem.deliveryType.priceInCents;
 
-      totalItemCost += itemCost;
-      totalShippingCost += itemShipping;
-      totalItemQuantity += itemQuantity;
-    }
-  }
+    totalItemCost += itemCost;
+    totalShippingCost += itemShipping;
+    totalItemQuantity += itemQuantity;
+  });
   
   const totalBeforeTax = totalItemCost + totalShippingCost;
   const estimatedTax = totalBeforeTax * 0.1;

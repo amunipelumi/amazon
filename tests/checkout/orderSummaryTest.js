@@ -1,6 +1,5 @@
 import { loadLocalStorage, myCart, addToCart } from "../../scripts/data/cart.js";
 import { orderSummary } from "../../scripts/checkout/orderSummary.js";
-import { myProducts } from "../../scripts/data/products.js";
 
 
 
@@ -18,7 +17,7 @@ describe('Test suite: orderSummary function', () => {
     spyOn(localStorage, 'setItem');
     
     spyOn(localStorage, 'getItem').and.callFake(() => {
-      return JSON.stringify({});
+      return JSON.stringify([]);
     });
 
     loadLocalStorage();
@@ -60,8 +59,7 @@ describe('Test suite: orderSummary function', () => {
       document.querySelector(`.js-cart-item-${id2}`)
     ).not.toEqual(null);
 
-    expect(Object.keys(myCart).length).toEqual(1);
-    expect(myProducts[id2].id).toEqual(id2);
+    expect(myCart.length).toEqual(1);
 
     document.querySelector('.js-test-container').innerHTML = '';
   });
