@@ -61,7 +61,7 @@ export function paymentSummary(){
       <div class="payment-summary-money">$${priceFormat(totalOrderCost)}</div>
     </div>
 
-    <button class="place-order-button button-primary">
+    <button class="place-order-button js-place-order-button button-primary">
       Place your order
     </button>
   `
@@ -75,4 +75,9 @@ export function paymentSummary(){
   document.querySelector('.js-payment-summary')
     .innerHTML = orderCostHTML;
 
+  document.querySelector('.js-place-order-button')
+    .addEventListener('click', () => {
+      console.log('You placed an order...');
+      window.location.href = 'orders.html';
+    });
 };
