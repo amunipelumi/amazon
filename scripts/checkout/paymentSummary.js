@@ -1,6 +1,8 @@
-import { myCart } from "../data/cart.js";
+import { myCart, emptyCart } from "../data/cart.js";
 import { getCartProduct } from "../data/products.js"
 import { priceFormat } from "../utils/price.js";
+import { formatDate } from "../utils/date.js";
+import { allOrders } from "../order/renderOrders.js";
 
 
 
@@ -8,6 +10,9 @@ export function paymentSummary(){
   let totalItemCost = 0;
   let totalShippingCost = 0;
   let totalItemQuantity = 0;
+  let totalOrderCost = 0;
+  
+  let orderItems = [];
 
   myCart.forEach((cartItem) => {
     const cartProduct = getCartProduct(cartItem.id);
@@ -16,14 +21,37 @@ export function paymentSummary(){
     const itemCost = itemQuantity * productPrice
     const itemShipping = cartItem.deliveryType.priceInCents;
 
+    const name = cartProduct.name;
+    const image = cartProduct.image;
+    const days = cartItem.deliveryType.deliveryDays;
+    const date = formatDate(days, 'MMMM D');
+
     totalItemCost += itemCost;
     totalShippingCost += itemShipping;
     totalItemQuantity += itemQuantity;
+
+    orderItems.unshift({
+      name: name,
+      image: image,
+      quantity: itemQuantity,
+      deliveryDate: date
+    });
   });
   
   const totalBeforeTax = totalItemCost + totalShippingCost;
   const estimatedTax = totalBeforeTax * 0.1;
-  const totalOrderCost = totalBeforeTax + estimatedTax;
+  totalOrderCost = totalBeforeTax + estimatedTax;
+
+  const orderDateFmt = formatDate(0, 'MMMM D');
+
+  const myOrder = {
+    items: orderItems,
+    orderDate: orderDateFmt,
+    orderTotal: totalOrderCost,
+    orderId: '99055568-2ef4-f9d9-065c-9a16b722ddc1'
+  }
+
+  // console.log(myOrder);
 
   // console.log(`Items(${totalItemQuantity}): $${priceFormat(totalItemCost)}`);
   // console.log(`Shipping & handling: $${priceFormat(totalShippingCost)}`);
@@ -77,7 +105,11 @@ export function paymentSummary(){
 
   document.querySelector('.js-place-order-button')
     .addEventListener('click', () => {
-      console.log('You placed an order...');
-      window.location.href = 'orders.html';
+      if (myOrder.items.length > 0){
+        allOrders.unshift(myOrder);
+        localStorage.setItem('allOrders', JSON.stringify(allOrders));
+        emptyCart();
+        window.location.href = 'orders.html';
+      };
     });
 };
