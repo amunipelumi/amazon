@@ -70,3 +70,8 @@ export function removeFromCart(id){
   myCart = newCart;
   saveCart();
 };
+
+export function emptyCart(){
+  myCart = [];
+  saveCart();
+};
