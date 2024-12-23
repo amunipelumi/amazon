@@ -1,18 +1,11 @@
-import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import { myCart, removeFromCart, updateCart } from "../data/cart.js";
 import { deliveryOptions as option} from "../data/delivery.js";
 import { getCartProduct } from "../data/products.js"
 import { priceFormat } from "../utils/price.js";
+import { formatDate } from "../utils/date.js";
 import { paymentSummary } from './paymentSummary.js';
 
 
-
-function formatDate(days){
-  const date = dayjs();
-  const days_ = date.add(days, 'days');
-  const format = days_.format('dddd, MMMM D');
-  return format;
-};
 
 export function orderSummary(){
 
